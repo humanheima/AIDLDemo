@@ -48,4 +48,12 @@
         android:gravity="center"
         android:text="远程计算"
         android:textSize="24sp"/>
+
+    <Button
+        android:id="@+id/btn_pass_object"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="传递对象"
+        android:textSize="24sp"/>
 </LinearLayout>

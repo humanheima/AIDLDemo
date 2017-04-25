@@ -9,10 +9,15 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.hm.aidlserver.DataTestAidlInterface;
 import com.hm.aidlserver.IMyAidlInterface;
+import com.hm.aidlserver.Person;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,8 +38,10 @@ public class MainActivity extends AppCompatActivity {
     private int mNum1;
     private int mNum2;
     private int mTotal;
-
+    private int age = 1;
+    private List<Person> persons;
     private IMyAidlInterface iMyAidlInterface;
+    private DataTestAidlInterface dataTestAidlInterface;
     private ServiceConnection conn = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -48,13 +55,28 @@ public class MainActivity extends AppCompatActivity {
             iMyAidlInterface = null;
         }
     };
+    //传递一个序列化的对象
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            dataTestAidlInterface = DataTestAidlInterface.Stub.asInterface(service);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            if (dataTestAidlInterface != null) {
+                dataTestAidlInterface = null;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        bindService();
+        //bindService();
+        bindDataService();
     }
 
     private void bindService() {
@@ -63,22 +85,48 @@ public class MainActivity extends AppCompatActivity {
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
     }
 
-    @OnClick(R.id.btn_count)
-    public void onClick() {
-        mNum1 = Integer.parseInt(etNum1.getText().toString());
-        mNum2 = Integer.parseInt(etNum2.getText().toString());
-        try {
-            mTotal = iMyAidlInterface.add(mNum1, mNum2);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            Log.e(TAG, "onClick: " + e.getMessage());
+    private void bindDataService() {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName("com.hm.aidlserver", "com.hm.aidlserver.ITestDataService"));
+        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+    }
+
+    @OnClick({R.id.btn_count, R.id.btn_pass_object})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_count:
+                mNum1 = Integer.parseInt(etNum1.getText().toString());
+                mNum2 = Integer.parseInt(etNum2.getText().toString());
+                try {
+                    mTotal = iMyAidlInterface.add(mNum1, mNum2);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "onClick: " + e.getMessage());
+                }
+                editShowResult.setText("mTotal=" + mTotal);
+                break;
+            case R.id.btn_pass_object:
+                Person person = new Person("dumingwei", age);
+                age++;
+                try {
+                    persons = dataTestAidlInterface.getPersonListIn(person);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "onClick: " + e.getMessage());
+                }
+                editShowResult.setText(persons.toString());
+                break;
+            default:
+                break;
         }
-        editShowResult.setText("mTotal=" + mTotal);
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(conn);
+        if (connection != null) {
+            unbindService(connection);
+        }
     }
 }
