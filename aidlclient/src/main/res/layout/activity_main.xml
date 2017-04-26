@@ -1,59 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:scrollbars="none"
+    >
 
-    <EditText
-        android:id="@+id/et_num1"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center|right"/>
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="right|center"
-        android:text="+"
-        android:textSize="24sp"/>
+        <Button
+            android:id="@+id/btn_baseknowledge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AIDL快速入门"
+            android:textAllCaps="false"/>
 
-    <EditText
-        android:id="@+id/et_num2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center|right"/>
+        <Button
+            android:id="@+id/btn_bookmanager"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="bookManage practise"
+            android:textAllCaps="false"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="right|center"
-        android:text="="
-        android:textSize="24sp"/>
+    </LinearLayout>
 
-    <EditText
-        android:id="@+id/edit_show_result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:editable="false"
-        android:gravity="center|right"
-        android:textSize="24sp"/>
-
-    <Button
-        android:id="@+id/btn_count"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="远程计算"
-        android:textSize="24sp"/>
-
-    <Button
-        android:id="@+id/btn_pass_object"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="传递对象"
-        android:textSize="24sp"/>
-</LinearLayout>
+</android.support.v4.widget.NestedScrollView>
