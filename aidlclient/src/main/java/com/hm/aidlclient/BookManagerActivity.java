@@ -41,11 +41,25 @@ public class BookManagerActivity extends AppCompatActivity {
             }
         }
     };
+    private IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() {
+        @Override
+        public void binderDied() {
+            Log.e(TAG, "binderDied: " + Thread.currentThread().getName());
+            if (bookManager == null) {
+                return;
+            }
+            bookManager.asBinder().unlinkToDeath(mDeathRecipient, 0);
+            bookManager = null;
+            //重新绑定
+            bind();
+        }
+    };
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             bookManager = IBookManager.Stub.asInterface(service);
             try {
+                //service.linkToDeath(mDeathRecipient, 0);
                 bookList = bookManager.getBookList();
                 Log.e(TAG, "query book list,list type:" + bookList.getClass().getCanonicalName());
                 Log.e(TAG, "query book list,list:" + bookList.toString());
@@ -58,13 +72,13 @@ public class BookManagerActivity extends AppCompatActivity {
                 e.printStackTrace();
                 Log.e(TAG, "onServiceConnected: error" + e.getMessage());
             }
-
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             bookManager = null;
-            Log.e(TAG, "onServiceDisconnected: binder died");
+            Log.e(TAG, "onServiceDisconnected: " + Thread.currentThread().getName());
+            bind();
         }
     };
 
@@ -89,6 +103,10 @@ public class BookManagerActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_bind)
     public void onViewClicked() {
+        bind();
+    }
+
+    private void bind() {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.hm.aidlserver", "com.hm.aidlserver.BookManagerService"));
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
