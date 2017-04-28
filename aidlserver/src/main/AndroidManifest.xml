@@ -4,6 +4,7 @@
 
     <permission android:name="com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE"
         android:protectionLevel="normal"/>
+    <uses-permission android:name="com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE"/>
 
     <application
         android:allowBackup="true"
