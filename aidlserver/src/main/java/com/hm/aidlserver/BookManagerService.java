@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Parcel;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.util.Log;
@@ -44,6 +45,28 @@ public class BookManagerService extends Service {
             Log.e(TAG, "unRegisterListener:" + mListenerList.beginBroadcast());
             mListenerList.finishBroadcast();
         }
+
+        @Override
+        public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
+            //在这里也可以做权限验证
+            int check = checkCallingOrSelfPermission("com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE");
+            if (check == PackageManager.PERMISSION_DENIED) {
+                Log.e(TAG, "onBind: permission denied");
+                return false;
+            }
+            String packageName;
+            String[] packages = getPackageManager().getPackagesForUid(getCallingUid());
+            if (packages != null && packages.length > 0) {
+                packageName = packages[0];
+                if (!packageName.startsWith("com.hm")) {
+                    Log.e(TAG, "onTransact: package verify failed");
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            return super.onTransact(code, data, reply, flags);
+        }
     };
 
     public BookManagerService() {
@@ -59,12 +82,13 @@ public class BookManagerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        int check = checkCallingOrSelfPermission("com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE");
+        // TODO: 2017/4/28 在这里做验证
+       /* int check = checkCallingOrSelfPermission("com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE");
         if (check == PackageManager.PERMISSION_DENIED) {
             Log.e(TAG, "onBind: permission denied");
             return null;
         }
-        Log.e(TAG, "onBind: permission granted");
+        Log.e(TAG, "onBind: permission granted");*/
         return mBinder;
     }
 
