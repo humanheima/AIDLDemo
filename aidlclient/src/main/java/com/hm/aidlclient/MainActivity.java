@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.btn_baseknowledge, R.id.btn_bookmanager})
+    @OnClick({R.id.btn_baseknowledge, R.id.btn_bookmanager, R.id.btn_messenger})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_baseknowledge:
@@ -26,6 +26,11 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.btn_bookmanager:
                 BookManagerActivity.launch(this);
+                break;
+            case R.id.btn_messenger:
+                MessengerActivity.launch(this);
+                break;
+            default:
                 break;
         }
     }

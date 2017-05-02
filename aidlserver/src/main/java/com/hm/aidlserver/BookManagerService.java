@@ -58,7 +58,7 @@ public class BookManagerService extends Service {
              */
             int check = checkCallingOrSelfPermission("com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE");
             if (check == PackageManager.PERMISSION_DENIED) {
-                Log.e(TAG, "onBind: permission denied");
+                Log.e(TAG, "onTransact: permission denied");
                 return false;
             }
             /**

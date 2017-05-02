@@ -27,6 +27,7 @@ public class BookManagerActivity extends AppCompatActivity {
     private static final int MESSAGE_NEW_BOOK_ARRIVED = 1;
     private IBookManager bookManager;
     private List<Book> bookList;
+    private boolean binded;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -119,6 +120,7 @@ public class BookManagerActivity extends AppCompatActivity {
     }
 
     private void bind() {
+        binded = true;
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.hm.aidlserver", "com.hm.aidlserver.BookManagerService"));
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
@@ -136,6 +138,8 @@ public class BookManagerActivity extends AppCompatActivity {
             }
         }
         super.onDestroy();
-        unbindService(connection);
+        if (binded) {
+            unbindService(connection);
+        }
     }
 }
