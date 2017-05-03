@@ -32,6 +32,13 @@
             android:text="使用Messenger实现进程间通信"
             android:textAllCaps="false"/>
 
+        <Button
+            android:id="@+id/btn_provider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="使用ContentProvider实现进程间通信"
+            android:textAllCaps="false"/>
+
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
