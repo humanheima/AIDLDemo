@@ -3,7 +3,6 @@
           package="com.hm.aidlclient">
 
     <uses-permission android:name="com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE"/>
-    <uses-permission android:name="com.hm.aidlserver.permission.PROVIDER"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
     <application

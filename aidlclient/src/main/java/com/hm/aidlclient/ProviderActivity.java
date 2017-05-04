@@ -1,16 +1,19 @@
 package com.hm.aidlclient;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -41,6 +44,66 @@ public class ProviderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_provider);
         ButterKnife.bind(this);
+        //getContacts();
+        useBookProvider();
+    }
+
+    private void useBookProvider() {
+
+        Uri bookUri = Uri.parse("content://com.hm.aidlserver.bookprovider/book");
+        //插入操作
+        ContentValues values = new ContentValues();
+        values.put("id", 6);
+        values.put("name", "program design art");
+        getContentResolver().insert(bookUri, values);
+        Cursor bookCursor = getContentResolver().query(bookUri, null, null, null, null);
+        if (bookCursor != null) {
+            while (bookCursor.moveToNext()) {
+                Log.e(TAG, " bookId:" + bookCursor.getInt(bookCursor.getColumnIndex("id")) + ", bookName:" + bookCursor.getString(bookCursor.getColumnIndex("name")));
+            }
+            bookCursor.close();
+        }
+        //更新操作
+        ContentValues updateValue = new ContentValues();
+        updateValue.put("name", "update program design art");
+        int row = getContentResolver().update(bookUri, updateValue, "id = ?", new String[]{"6"});
+        Log.e(TAG, "useBookProvider: update row=" + row);
+        Cursor updateCursor = getContentResolver().query(bookUri, null, null, null, null);
+        if (updateCursor != null) {
+            while (updateCursor.moveToNext()) {
+                Log.e(TAG, " bookId:" + updateCursor.getInt(updateCursor.getColumnIndex("id")) +
+                        ", bookName:" + updateCursor
+                        .getString(updateCursor.getColumnIndex("name")));
+            }
+            updateCursor.close();
+        }
+        //删除操作
+        int count = getContentResolver().delete(bookUri, "id = ?", new String[]{"3"});
+        Log.e(TAG, "useBookProvider: delete count=" + count);
+        Cursor deleteCursor = getContentResolver().query(bookUri, null, null, null, null);
+        if (deleteCursor != null) {
+            while (deleteCursor.moveToNext()) {
+                Log.e(TAG, " bookId:" + deleteCursor.getInt(deleteCursor.getColumnIndex("id")) +
+                        ", bookName:" + deleteCursor
+                        .getString(deleteCursor.getColumnIndex("name")));
+            }
+            deleteCursor.close();
+        }
+
+        Uri userUri = Uri.parse("content://com.hm.aidlserver.bookprovider/user");
+        Cursor userCursor = getContentResolver().query(userUri, null, null, null, null);
+        if (userCursor != null) {
+            while (userCursor.moveToNext()) {
+                Log.e(TAG, " userId:" + userCursor.getInt(userCursor.getColumnIndex("id")) +
+                        " ,userName:" + userCursor.getString(userCursor.getColumnIndex("name"))
+                        + " ,sex:" + userCursor.getInt(userCursor.getColumnIndex("sex")));
+            }
+            userCursor.close();
+        }
+    }
+
+
+    private void getContacts() {
         contactList = new ArrayList<>();
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, contactList);
         listView.setAdapter(adapter);

@@ -7,7 +7,6 @@
         android:protectionLevel="normal"/>
 
     <uses-permission android:name="com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE"/>
-    <permission android:name="com.hm.aidlserver.permission.PROVIDER"/>
 
     <application
         android:allowBackup="true"
@@ -49,8 +48,7 @@
             android:name=".BookProvider"
             android:authorities="com.hm.aidlserver.bookprovider"
             android:enabled="true"
-            android:exported="true"
-            android:permission="com.hm.aidlserver.permission.PROVIDER">
+            android:exported="true">
         </provider>
     </application>
 
