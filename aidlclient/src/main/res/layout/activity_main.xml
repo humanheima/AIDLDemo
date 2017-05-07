@@ -39,6 +39,13 @@
             android:text="使用ContentProvider实现进程间通信"
             android:textAllCaps="false"/>
 
+        <Button
+            android:id="@+id/btn_binderpool"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="binder连接池"
+            android:textAllCaps="false"/>
+
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

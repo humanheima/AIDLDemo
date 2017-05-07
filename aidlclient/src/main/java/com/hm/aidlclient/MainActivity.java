@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.btn_baseknowledge, R.id.btn_bookmanager, R.id.btn_messenger, R.id.btn_provider})
+    @OnClick({R.id.btn_baseknowledge, R.id.btn_bookmanager, R.id.btn_messenger, R.id.btn_provider, R.id.btn_binderpool})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_baseknowledge:
@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 break;
             case R.id.btn_provider:
                 openProviderActivity();
+                break;
+            case R.id.btn_binderpool:
+                BinderPoolActivity.launch(this);
                 break;
             default:
                 break;

@@ -27,6 +27,8 @@
         </activity>
         <activity android:name=".ProviderActivity">
         </activity>
+        <activity android:name=".BinderPoolActivity">
+        </activity>
     </application>
 
 </manifest>
