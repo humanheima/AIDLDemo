@@ -9,8 +9,6 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.hm.aidlserver.IBinderPool;
-import com.hm.aidlserver.impl.IComputeImpl;
-import com.hm.aidlserver.impl.SecurityCenterImpl;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -20,7 +18,6 @@ import java.util.concurrent.CountDownLatch;
 public class BinderPool {
 
     private static final String TAG = "BinderPool";
-    public static final int BINDERT_NONE = -1;
     public static final int BINDERT_COMPUTE = 0;
     public static final int BINDERT_NOSECURITY_CENTER = 1;
 
@@ -98,26 +95,4 @@ public class BinderPool {
         }
         return binder;
     }
-
-    public static class BinderPoolImpl extends IBinderPool.Stub {
-
-        public BinderPoolImpl() {
-            super();
-        }
-
-        @Override
-        public IBinder queryBinder(int binderCode) throws RemoteException {
-            IBinder binder = null;
-            switch (binderCode) {
-                case BINDERT_NOSECURITY_CENTER:
-                    binder = new SecurityCenterImpl();
-                    break;
-                case BINDERT_COMPUTE:
-                    binder = new IComputeImpl();
-                    break;
-            }
-            return binder;
-        }
-    }
-
 }
