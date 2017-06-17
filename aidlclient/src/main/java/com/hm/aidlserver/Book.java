@@ -11,6 +11,9 @@ public class Book implements Parcelable {
     private int bookId;
     private String bookName;
 
+    public Book() {
+    }
+
     public Book(int bookId, String bookName) {
         this.bookId = bookId;
         this.bookName = bookName;
@@ -43,9 +46,34 @@ public class Book implements Parcelable {
         dest.writeInt(bookId);
         dest.writeString(bookName);
     }
+    /**
+     * 参数是一个Parcel,用它来存储与传输数据
+     * @param dest
+     */
+    public void readFromParcel(Parcel dest) {
+        //注意，此处的读值顺序应当是和writeToParcel()方法中一致的
+        bookId = dest.readInt();
+        bookName = dest.readString();
+    }
 
     @Override
     public String toString() {
         return "{bookId:" + bookId + ",bookName:" + bookName + "}";
+    }
+
+    public int getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 }

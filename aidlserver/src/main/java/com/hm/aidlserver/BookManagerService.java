@@ -24,6 +24,7 @@ public class BookManagerService extends Service {
     private CopyOnWriteArrayList<Book> mBookList = new CopyOnWriteArrayList<>();
     private AtomicBoolean mIsServiceDestroyed = new AtomicBoolean(false);
     private RemoteCallbackList<IOnNewBookArriveListener> mListenerList = new RemoteCallbackList<>();
+    private int num = 10;
     private Binder mBinder = new IBookManager.Stub() {
 
         @Override
@@ -53,9 +54,11 @@ public class BookManagerService extends Service {
         @Override
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
             //在这里也可以做权限验证
+
             /**
              * 验证permission
              */
+            Log.e(TAG, "onTransact 验证权限");
             int check = checkCallingOrSelfPermission("com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE");
             if (check == PackageManager.PERMISSION_DENIED) {
                 Log.e(TAG, "onTransact: permission denied");
@@ -93,7 +96,7 @@ public class BookManagerService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: 2017/4/28 在这里做验证
-       /* int check = checkCallingOrSelfPermission("com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE");
+        /*int check = checkCallingOrSelfPermission("com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE");
         if (check == PackageManager.PERMISSION_DENIED) {
             Log.e(TAG, "onBind: permission denied");
             return null;
@@ -112,11 +115,13 @@ public class BookManagerService extends Service {
      * 如果IOnNewBookArriveListener#onNewBookArrived(com.hm.aidlserver.Book newBook)方法是耗时方法的话
      * <p>
      * mNewBookArrived不能运行在UI线程
+     * 通知观察者有新书到来
      *
      * @param book
      * @throws RemoteException
      */
-    private void mNewBookArrived(Book book) throws RemoteException {
+
+    private void notifyBookArrived(Book book) throws RemoteException {
         mBookList.add(book);
         final int N = mListenerList.beginBroadcast();
         for (int i = 0; i < N; i++) {
@@ -136,16 +141,16 @@ public class BookManagerService extends Service {
     private class ServiceWorker implements Runnable {
         @Override
         public void run() {
-            while (!mIsServiceDestroyed.get()) {
+            while (!mIsServiceDestroyed.get() && num < 12) {
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                int bookId = mBookList.size() + 1;
-                Book newBook = new Book(bookId, "new Book#" + bookId);
+                Book newBook = new Book(num, "new Book#" + num);
+                num++;
                 try {
-                    mNewBookArrived(newBook);
+                    notifyBookArrived(newBook);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

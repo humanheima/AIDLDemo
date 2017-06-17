@@ -11,6 +11,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.hm.aidlserver.Book;
 import com.hm.aidlserver.IBookManager;
@@ -28,6 +29,7 @@ public class BookManagerActivity extends AppCompatActivity {
     private IBookManager bookManager;
     private List<Book> bookList;
     private boolean binded;
+    private int bookId = 20;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -50,12 +52,10 @@ public class BookManagerActivity extends AppCompatActivity {
         @Override
         public void binderDied() {
             Log.e(TAG, "binderDied: " + Thread.currentThread().getName());
-            if (bookManager == null) {
-                return;
+            if (bookManager != null) {
+                bookManager.asBinder().unlinkToDeath(mDeathRecipient, 0);
+                bookManager = null;
             }
-            bookManager.asBinder().unlinkToDeath(mDeathRecipient, 0);
-            bookManager = null;
-            //重新发起连接请求
             bind();
         }
     };
@@ -63,21 +63,11 @@ public class BookManagerActivity extends AppCompatActivity {
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.e(TAG, "onServiceConnected: " + Thread.currentThread().getName());
+            Log.e(TAG, "onServiceConnected:");
             bookManager = IBookManager.Stub.asInterface(service);
             try {
                 //service.linkToDeath(mDeathRecipient, 0);
-
-                /**
-                 * 不能在这里直接调用服务端的耗时方法
-                 */
-                bookList = bookManager.getBookList();
-                Log.e(TAG, "query book list,list type:" + bookList.getClass().getCanonicalName());
-                Log.e(TAG, "query book list,list:" + bookList.toString());
-                bookManager.addBook(new Book(3, "Android 进阶"));
-                bookList = bookManager.getBookList();
-                Log.e(TAG, "query book list,list type:" + bookList.getClass().getCanonicalName());
-                Log.e(TAG, "query book list,list:" + bookList.toString());
+                getBookList();
                 bookManager.registerListener(mOnNewBookArriveListener);
             } catch (RemoteException e) {
                 e.printStackTrace();
@@ -89,7 +79,7 @@ public class BookManagerActivity extends AppCompatActivity {
         public void onServiceDisconnected(ComponentName name) {
             bookManager = null;
             Log.e(TAG, "onServiceDisconnected: " + Thread.currentThread().getName());
-            bind();
+             bind();
         }
     };
 
@@ -117,6 +107,48 @@ public class BookManagerActivity extends AppCompatActivity {
     @OnClick(R.id.btn_bind)
     public void onViewClicked() {
         bind();
+    }
+
+    @OnClick(R.id.btn_addBook)
+    public void addBook() {
+        if (bookManager != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        bookManager.addBook(new Book(bookId, "Android 进阶" + bookId));
+                        bookId++;
+                        bookList = bookManager.getBookList();
+                        Log.e(TAG, "query book list,list type:" + bookList.getClass().getCanonicalName());
+                        Log.e(TAG, "query book list,list:" + bookList.toString());
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        } else {
+            Toast.makeText(this, "远程服务已断开", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @OnClick(R.id.btn_getBookList)
+    public void getBookList() {
+        if (bookManager != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        bookList = bookManager.getBookList();
+                        Log.e(TAG, "query book list,list type:" + bookList.getClass().getCanonicalName());
+                        Log.e(TAG, "query book list,list:" + bookList.toString());
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        } else {
+            Toast.makeText(this, "远程服务已断开", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void bind() {
