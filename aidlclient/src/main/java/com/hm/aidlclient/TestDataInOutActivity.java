@@ -99,6 +99,15 @@ public class TestDataInOutActivity extends AppCompatActivity {
         }
     }
 
+    public void testPrimitiveData(View view) {
+        try {
+            int result = iTestDataInOut.testPrimitiveTypeData(2);
+            Log.d(TAG, "testPrimitiveTypeData: " + result);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onStop() {
         super.onStop();

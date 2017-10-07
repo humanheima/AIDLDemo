@@ -61,6 +61,12 @@ public class TestDataInOutService extends Service {
                 return book;
             }
         }
+
+        @Override
+        public int testPrimitiveTypeData(int a) throws RemoteException {
+            return a + 1;
+        }
+
     };
 
     public TestDataInOutService() {

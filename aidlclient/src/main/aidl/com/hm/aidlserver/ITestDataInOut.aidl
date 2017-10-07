@@ -10,4 +10,6 @@ interface ITestDataInOut {
        Book addBookIn(in Book book);
        Book addBookOut(out Book book);
        Book addBookInout(inout Book book);
+
+       int testPrimitiveTypeData(int a);
 }
