@@ -14,9 +14,13 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * 服务端的Service
+ */
 public class BookManagerService extends Service {
 
     private static final String TAG = BookManagerService.class.getSimpleName();
+
     private CopyOnWriteArrayList<Book> mBookList = new CopyOnWriteArrayList<>();
     private AtomicBoolean mIsServiceDestroyed = new AtomicBoolean(false);
     private RemoteCallbackList<IOnNewBookArriveListener> mListenerList = new RemoteCallbackList<>();
@@ -49,11 +53,17 @@ public class BookManagerService extends Service {
         @Override
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
             //在这里也可以做权限验证
+            /**
+             * 验证permission
+             */
             int check = checkCallingOrSelfPermission("com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE");
             if (check == PackageManager.PERMISSION_DENIED) {
                 Log.e(TAG, "onBind: permission denied");
                 return false;
             }
+            /**
+             * 验证包名
+             */
             String packageName;
             String[] packages = getPackageManager().getPackagesForUid(getCallingUid());
             if (packages != null && packages.length > 0) {
@@ -98,18 +108,31 @@ public class BookManagerService extends Service {
         super.onDestroy();
     }
 
-    private void onNewBookArrived(Book book) throws RemoteException {
+    /**
+     * 如果IOnNewBookArriveListener#onNewBookArrived(com.hm.aidlserver.Book newBook)方法是耗时方法的话
+     * <p>
+     * mNewBookArrived不能运行在UI线程
+     *
+     * @param book
+     * @throws RemoteException
+     */
+    private void mNewBookArrived(Book book) throws RemoteException {
         mBookList.add(book);
         final int N = mListenerList.beginBroadcast();
         for (int i = 0; i < N; i++) {
             IOnNewBookArriveListener l = mListenerList.getBroadcastItem(i);
             if (l != null) {
+
                 l.onNewBookArrived(book);
             }
         }
         mListenerList.finishBroadcast();
     }
 
+
+    /**
+     * 模拟新书到来的操作
+     */
     private class ServiceWorker implements Runnable {
         @Override
         public void run() {
@@ -122,7 +145,7 @@ public class BookManagerService extends Service {
                 int bookId = mBookList.size() + 1;
                 Book newBook = new Book(bookId, "new Book#" + bookId);
                 try {
-                    onNewBookArrived(newBook);
+                    mNewBookArrived(newBook);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

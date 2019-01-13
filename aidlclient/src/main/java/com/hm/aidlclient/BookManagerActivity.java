@@ -41,6 +41,10 @@ public class BookManagerActivity extends AppCompatActivity {
             }
         }
     };
+
+    /**
+     * 当Binder死亡时，我们会收到通知，这个时候，我们可以重新发起连接请求从而恢复链接。
+     */
     private IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() {
         @Override
         public void binderDied() {
@@ -50,16 +54,22 @@ public class BookManagerActivity extends AppCompatActivity {
             }
             bookManager.asBinder().unlinkToDeath(mDeathRecipient, 0);
             bookManager = null;
-            //重新绑定
+            //重新发起连接请求
             bind();
         }
     };
+
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.e(TAG, "onServiceConnected: " + Thread.currentThread().getName());
             bookManager = IBookManager.Stub.asInterface(service);
             try {
                 //service.linkToDeath(mDeathRecipient, 0);
+
+                /**
+                 * 不能在这里直接调用服务端的耗时方法
+                 */
                 bookList = bookManager.getBookList();
                 Log.e(TAG, "query book list,list type:" + bookList.getClass().getCanonicalName());
                 Log.e(TAG, "query book list,list:" + bookList.toString());
@@ -85,6 +95,8 @@ public class BookManagerActivity extends AppCompatActivity {
     private IOnNewBookArriveListener mOnNewBookArriveListener = new IOnNewBookArriveListener.Stub() {
         @Override
         public void onNewBookArrived(Book newBook) throws RemoteException {
+            //这个是在客户端的Binder线程池中运行的
+            Log.e(TAG, "onNewBookArrived: " + Thread.currentThread().getName());
             mHandler.obtainMessage(MESSAGE_NEW_BOOK_ARRIVED, newBook).sendToTarget();
         }
     };
