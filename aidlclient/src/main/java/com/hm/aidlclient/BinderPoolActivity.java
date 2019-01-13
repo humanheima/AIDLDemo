@@ -22,7 +22,7 @@ public class BinderPoolActivity extends AppCompatActivity {
     private static final String TAG = "BinderPoolActivity";
     private ISecurityCenter mSecurityCenter;
     private ICompute mComputer;
-    private BinderPool binderPool;
+    private BinderPoolHelper binderPoolHelper;
 
     public static void launch(Context context) {
         Intent starter = new Intent(context, BinderPoolActivity.class);
@@ -43,8 +43,8 @@ public class BinderPoolActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        binderPool = BinderPool.getsInstance(BinderPoolActivity.this);
-                        IBinder securityBinder = binderPool.queryBinder(BinderPool.BINDERT_NOSECURITY_CENTER);
+                        binderPoolHelper = BinderPoolHelper.getsInstance(BinderPoolActivity.this);
+                        IBinder securityBinder = binderPoolHelper.queryBinder(BinderPoolHelper.BINDERT_NOSECURITY_CENTER);
                         mSecurityCenter = SecurityCenterImpl.asInterface(securityBinder);
                         Log.e(TAG, "doWork: visit ISecurityCenter");
                         String msg = "helloworld-安卓";
@@ -64,8 +64,8 @@ public class BinderPoolActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        binderPool = BinderPool.getsInstance(BinderPoolActivity.this);
-                        IBinder computeBinder = binderPool.queryBinder(BinderPool.BINDERT_COMPUTE);
+                        binderPoolHelper = BinderPoolHelper.getsInstance(BinderPoolActivity.this);
+                        IBinder computeBinder = binderPoolHelper.queryBinder(BinderPoolHelper.BINDERT_COMPUTE);
                         mComputer = IComputeImpl.asInterface(computeBinder);
                         Log.e(TAG, "doWork: visit ICompute");
                         try {
@@ -84,6 +84,6 @@ public class BinderPoolActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        binderPool = null;
+        binderPoolHelper = null;
     }
 }

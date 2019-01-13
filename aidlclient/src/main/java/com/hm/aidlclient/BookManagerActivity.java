@@ -79,7 +79,7 @@ public class BookManagerActivity extends AppCompatActivity {
         public void onServiceDisconnected(ComponentName name) {
             bookManager = null;
             Log.e(TAG, "onServiceDisconnected: " + Thread.currentThread().getName());
-             bind();
+            bind();
         }
     };
 

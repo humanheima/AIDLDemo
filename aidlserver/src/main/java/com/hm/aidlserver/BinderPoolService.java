@@ -25,7 +25,7 @@ public class BinderPoolService extends Service {
         return mBinderPool;
     }
 
-    private class BinderPool extends IBinderPool.Stub {
+    private static class BinderPool extends IBinderPool.Stub {
 
         private static final String TAG = "BinderPool";
         private static final int BINDERT_COMPUTE = 0;

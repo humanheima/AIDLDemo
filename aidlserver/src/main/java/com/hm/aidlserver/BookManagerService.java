@@ -25,6 +25,10 @@ public class BookManagerService extends Service {
     private AtomicBoolean mIsServiceDestroyed = new AtomicBoolean(false);
     private RemoteCallbackList<IOnNewBookArriveListener> mListenerList = new RemoteCallbackList<>();
     private int num = 10;
+
+    /**
+     * 实现IBookManager接口中的方法
+     */
     private Binder mBinder = new IBookManager.Stub() {
 
         @Override
@@ -40,21 +44,15 @@ public class BookManagerService extends Service {
         @Override
         public void registerListener(IOnNewBookArriveListener listener) throws RemoteException {
             mListenerList.register(listener);
-            Log.e(TAG, "registerListener: " + mListenerList.beginBroadcast());
-            mListenerList.finishBroadcast();
         }
 
         @Override
         public void unRegisterListener(IOnNewBookArriveListener listener) throws RemoteException {
             mListenerList.unregister(listener);
-            Log.e(TAG, "unRegisterListener:" + mListenerList.beginBroadcast());
-            mListenerList.finishBroadcast();
         }
 
         @Override
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            //在这里也可以做权限验证
-
             /**
              * 验证permission
              */
@@ -95,13 +93,13 @@ public class BookManagerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: 2017/4/28 在这里做验证
-        /*int check = checkCallingOrSelfPermission("com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE");
+        //也可以在这里做权限验证
+        int check = checkCallingOrSelfPermission("com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE");
         if (check == PackageManager.PERMISSION_DENIED) {
             Log.e(TAG, "onBind: permission denied");
             return null;
         }
-        Log.e(TAG, "onBind: permission granted");*/
+        Log.e(TAG, "onBind: permission granted");
         return mBinder;
     }
 
@@ -114,13 +112,12 @@ public class BookManagerService extends Service {
     /**
      * 如果IOnNewBookArriveListener#onNewBookArrived(com.hm.aidlserver.Book newBook)方法是耗时方法的话
      * <p>
-     * mNewBookArrived不能运行在UI线程
+     * notifyBookArrived不能运行在UI线程
      * 通知观察者有新书到来
      *
      * @param book
      * @throws RemoteException
      */
-
     private void notifyBookArrived(Book book) throws RemoteException {
         mBookList.add(book);
         final int N = mListenerList.beginBroadcast();
@@ -150,6 +147,7 @@ public class BookManagerService extends Service {
                 Book newBook = new Book(num, "new Book#" + num);
                 num++;
                 try {
+                    //在非UI线程运行notifyBookArrived方法，防止阻塞服务端的主线程
                     notifyBookArrived(newBook);
                 } catch (RemoteException e) {
                     e.printStackTrace();

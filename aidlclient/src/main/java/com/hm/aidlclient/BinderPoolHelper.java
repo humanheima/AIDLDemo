@@ -14,16 +14,17 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by dumingwei on 2017/5/7.
+ * Binder连接池的具体实现
  */
-public class BinderPool {
+public class BinderPoolHelper {
 
-    private static final String TAG = "BinderPool";
+    private static final String TAG = "BinderPoolHelper";
     public static final int BINDERT_COMPUTE = 0;
     public static final int BINDERT_NOSECURITY_CENTER = 1;
 
     private Context mContext;
     private IBinderPool mBinderPool;
-    private static volatile BinderPool sInstance;
+    private static volatile BinderPoolHelper sInstance;
     private CountDownLatch mConnectBinderPoolCountDownLatch;
 
     private ServiceConnection mBinderPoolConnection = new ServiceConnection() {
@@ -54,17 +55,17 @@ public class BinderPool {
         }
     };
 
-    private BinderPool(Context context) {
+    private BinderPoolHelper(Context context) {
         mContext = context.getApplicationContext();
         connectBinderPoolService();
 
     }
 
-    public static BinderPool getsInstance(Context context) {
+    public static BinderPoolHelper getsInstance(Context context) {
         if (sInstance == null) {
-            synchronized (BinderPool.class) {
+            synchronized (BinderPoolHelper.class) {
                 if (sInstance == null) {
-                    sInstance = new BinderPool(context);
+                    sInstance = new BinderPoolHelper(context);
                 }
             }
 
