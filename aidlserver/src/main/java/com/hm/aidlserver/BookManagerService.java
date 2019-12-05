@@ -21,6 +21,7 @@ public class BookManagerService extends Service {
 
     private static final String TAG = BookManagerService.class.getSimpleName();
 
+    //使用CopyOnWriteArrayList，因为可能会有多个客户端同时操作书籍列表
     private CopyOnWriteArrayList<Book> mBookList = new CopyOnWriteArrayList<>();
     private AtomicBoolean mIsServiceDestroyed = new AtomicBoolean(false);
     private RemoteCallbackList<IOnNewBookArriveListener> mListenerList = new RemoteCallbackList<>();
@@ -33,11 +34,15 @@ public class BookManagerService extends Service {
 
         @Override
         public List<Book> getBookList() throws RemoteException {
+            //运行在Binder线程池中的线程
+            Log.d(TAG, "getBookList: " + Thread.currentThread().getName());
             return mBookList;
         }
 
         @Override
         public void addBook(Book book) throws RemoteException {
+            //运行在Binder线程池中的线程
+            Log.d(TAG, "addBook: " + Thread.currentThread().getName());
             mBookList.add(book);
         }
 
@@ -56,7 +61,7 @@ public class BookManagerService extends Service {
             /**
              * 验证permission
              */
-            Log.e(TAG, "onTransact 验证权限");
+            Log.e(TAG, "onTransact 验证权限" + Thread.currentThread().getName());
             int check = checkCallingOrSelfPermission("com.hm.aidlserver.permission.ACCESS_BOOK_SERVICE");
             if (check == PackageManager.PERMISSION_DENIED) {
                 Log.e(TAG, "onTransact: permission denied");
@@ -86,6 +91,7 @@ public class BookManagerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(TAG, "onCreate: " + Thread.currentThread().getName());
         mBookList.add(new Book(1, "Android"));
         mBookList.add(new Book(2, "ios"));
         new Thread(new ServiceWorker()).start();

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -9,7 +8,8 @@
         android:id="@+id/et_num1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center|right"/>
+        android:gravity="center|right"
+        android:inputType="number" />
 
     <TextView
         android:layout_width="match_parent"
@@ -17,13 +17,14 @@
         android:layout_gravity="center"
         android:gravity="right|center"
         android:text="+"
-        android:textSize="24sp"/>
+        android:textSize="24sp" />
 
     <EditText
         android:id="@+id/et_num2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center|right"/>
+        android:gravity="center|right"
+        android:inputType="number" />
 
     <TextView
         android:layout_width="match_parent"
@@ -31,15 +32,16 @@
         android:layout_gravity="center"
         android:gravity="right|center"
         android:text="="
-        android:textSize="24sp"/>
+        android:textSize="24sp" />
 
     <EditText
         android:id="@+id/edit_show_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:editable="false"
+        android:inputType="none"
         android:gravity="center|right"
-        android:textSize="24sp"/>
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/btn_count"
@@ -47,7 +49,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="远程计算"
-        android:textSize="24sp"/>
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/btn_pass_object"
@@ -55,5 +57,5 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="传递对象"
-        android:textSize="24sp"/>
+        android:textSize="24sp" />
 </LinearLayout>

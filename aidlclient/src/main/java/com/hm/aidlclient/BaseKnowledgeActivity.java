@@ -83,7 +83,7 @@ public class BaseKnowledgeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_knowledge);
         ButterKnife.bind(this);
-        //bindService();
+        bindService();
         bindDataService();
     }
 
@@ -133,6 +133,9 @@ public class BaseKnowledgeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (conn != null) {
+            unbindService(conn);
+        }
         if (connection != null) {
             unbindService(connection);
         }

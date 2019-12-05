@@ -63,8 +63,9 @@ public class BookManagerActivity extends AppCompatActivity {
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.e(TAG, "onServiceConnected:");
+            Log.e(TAG, "onServiceConnected:" + service.getClass().getCanonicalName());
             bookManager = IBookManager.Stub.asInterface(service);
+            Log.e(TAG, "onServiceConnected:" + bookManager.getClass().getCanonicalName());
             try {
                 //service.linkToDeath(mDeathRecipient, 0);
                 getBookList();
