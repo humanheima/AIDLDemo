@@ -94,6 +94,7 @@ public class BookManagerService extends Service {
         Log.d(TAG, "onCreate: " + Thread.currentThread().getName());
         mBookList.add(new Book(1, "Android"));
         mBookList.add(new Book(2, "ios"));
+        //这个是在服务端的主线程，我们新开一个线程来通知观察者
         new Thread(new ServiceWorker()).start();
     }
 

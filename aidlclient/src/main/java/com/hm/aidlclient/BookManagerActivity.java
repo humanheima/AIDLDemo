@@ -51,7 +51,8 @@ public class BookManagerActivity extends AppCompatActivity {
     private IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() {
         @Override
         public void binderDied() {
-            Log.e(TAG, "binderDied: " + Thread.currentThread().getName());
+            //运行在Binder线程池中
+            Log.e(TAG, "binderDied: current thread is " + Thread.currentThread().getName());
             if (bookManager != null) {
                 bookManager.asBinder().unlinkToDeath(mDeathRecipient, 0);
                 bookManager = null;
@@ -67,7 +68,7 @@ public class BookManagerActivity extends AppCompatActivity {
             bookManager = IBookManager.Stub.asInterface(service);
             Log.e(TAG, "onServiceConnected:" + bookManager.getClass().getCanonicalName());
             try {
-                //service.linkToDeath(mDeathRecipient, 0);
+                service.linkToDeath(mDeathRecipient, 0);
                 getBookList();
                 bookManager.registerListener(mOnNewBookArriveListener);
             } catch (RemoteException e) {
@@ -88,7 +89,7 @@ public class BookManagerActivity extends AppCompatActivity {
         @Override
         public void onNewBookArrived(Book newBook) throws RemoteException {
             //这个是在客户端的Binder线程池中运行的
-            Log.e(TAG, "onNewBookArrived: " + Thread.currentThread().getName());
+            Log.e(TAG, "onNewBookArrived: current thread is：" + Thread.currentThread().getName());
             mHandler.obtainMessage(MESSAGE_NEW_BOOK_ARRIVED, newBook).sendToTarget();
         }
     };

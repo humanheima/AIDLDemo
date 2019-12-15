@@ -16,6 +16,10 @@ import com.hm.aidlserver.ITestDataInOut;
 
 import java.util.List;
 
+/**
+ * Crete by dumingwei on 2019-12-15
+ * Desc: 测试Binder中定向tag in out inout
+ */
 public class TestDataInOutActivity extends AppCompatActivity {
 
     private static final String TAG = "TestDataInOutActivity";
@@ -62,7 +66,8 @@ public class TestDataInOutActivity extends AppCompatActivity {
 
     private void attemptToBindService() {
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName("com.hm.aidlserver", "com.hm.aidlserver.service.TestDataInOutService"));
+        intent.setComponent(new ComponentName("com.hm.aidlserver",
+                "com.hm.aidlserver.service.TestDataInOutService"));
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
@@ -108,12 +113,14 @@ public class TestDataInOutActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         if (mBound) {
             unbindService(connection);
             mBound = false;
         }
     }
+
 }

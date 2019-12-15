@@ -31,6 +31,7 @@ public class TestDataInOutService extends Service {
             synchronized (this) {
                 if (mBooks == null)
                     mBooks = new ArrayList<>();
+                Log.d(TAG, "addBookIn: " + book.toString());
                 book.setBookName(book.getBookName() + "addBookIn");
                 mBooks.add(book);
                 Log.d(TAG, "invoking addBookIn() method , now the list is : " + mBooks.toString());
@@ -43,6 +44,7 @@ public class TestDataInOutService extends Service {
             synchronized (this) {
                 if (mBooks == null)
                     mBooks = new ArrayList<>();
+                Log.d(TAG, "addBookOut: " + book.toString());
                 book.setBookName(book.getBookName() + "addBookOut");
                 mBooks.add(book);
                 Log.d(TAG, "invoking addBookOut() method , now the list is : " + mBooks.toString());
@@ -55,6 +57,7 @@ public class TestDataInOutService extends Service {
             synchronized (this) {
                 if (mBooks == null)
                     mBooks = new ArrayList<>();
+                Log.d(TAG, "addBookInout: " + book.toString());
                 book.setBookName(book.getBookName() + "addBookInout");
                 mBooks.add(book);
                 Log.d(TAG, "invoking addBookInout() method , now the list is : " + mBooks.toString());

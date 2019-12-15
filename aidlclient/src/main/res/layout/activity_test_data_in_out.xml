@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -9,30 +8,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="测试AIDL中非基本类型数据方向的问题in out inout"
-        android:textAllCaps="false"/>
+        android:textAllCaps="false" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="addBookIn"
-        android:text="addBookIn"/>
+        android:text="addBookIn"
+        android:textAllCaps="false" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="addBookOut"
-        android:text="addBookOut"/>
+        android:text="addBookOut"
+        android:textAllCaps="false" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="addBookInOut"
-        android:text="addBookInOut"/>
+        android:text="addBookInOut"
+        android:textAllCaps="false" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="testPrimitiveData"
-        android:text="testPrimitiveData"/>
+        android:text="testPrimitiveData"
+        android:textAllCaps="false" />
 
 </LinearLayout>
